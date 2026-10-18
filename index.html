@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090711">
+<title>SILA TECH — WhatsApp Manager</title>
+<style>
+:root {
+  --bg:#090711;
+  --panel:#110e1d;
+  --panel2:#171226;
+  --purple:#8b5cf6;
+  --light:#b69aff;
+  --text:#f7f4ff;
+  --muted:#a49bb9;
+  --border:rgba(181,145,255,.16);
+  --green:#40df9b;
+  --red:#ff6688;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Arial,sans-serif;
+  min-height:100vh;
+}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:255px;background:#0d0a17;border-right:1px solid var(--border);
+  padding:25px 17px;display:flex;flex-direction:column;flex-shrink:0;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:5px 7px 30px}
+.logo{
+  width:45px;height:45px;border-radius:14px;
+  display:grid;place-items:center;font-size:22px;font-weight:900;
+  background:linear-gradient(135deg,#a78bfa,#6d28d9);
+  box-shadow:0 5px 25px #8b5cf633;
+}
+.brand h2{font-size:17px;margin:0;letter-spacing:1px}
+.brand small{color:var(--muted);font-size:10px;letter-spacing:2px}
+.nav-label{font-size:10px;letter-spacing:2px;color:#786e90;padding:12px}
+.nav{
+  display:flex;align-items:center;gap:12px;padding:13px;
+  color:var(--muted);border-radius:11px;margin-bottom:5px;
+  cursor:pointer;font-size:13px;transition:.2s;
+}
+.nav:hover,.nav.active{background:#8b5cf61c;color:#c9b4ff}
+.nav.active{border:1px solid #8b5cf633}
+.nav .ico{width:22px;text-align:center;font-size:17px}
+.sidebar-bottom{margin-top:auto}
+.connection{
+  padding:15px;border:1px solid var(--border);
+  background:var(--panel);border-radius:14px;font-size:12px;
+}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;
+background:var(--green);margin-right:7px}
+.connection p{color:var(--muted);line-height:1.6;margin-bottom:0}
+main{flex:1;min-width:0;padding:28px 34px 50px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:28px}
+.eyebrow{color:var(--light);font-size:10px;letter-spacing:2px;font-weight:800}
+h1{font-size:clamp(25px,3vw,34px);letter-spacing:-1px;margin:8px 0}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+.top-actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{
+  border:1px solid var(--border);border-radius:10px;padding:11px 15px;
+  background:var(--panel2);color:var(--text);font-size:12px;font-weight:700;
+}
+.btn:hover{border-color:var(--purple)}
+.btn-primary{
+  background:linear-gradient(135deg,#9568ff,#6d36dc);
+  border-color:transparent;box-shadow:0 5px 20px #7c3aed22;
+}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:25px 0}
+.stat,.card{
+  background:linear-gradient(145deg,#151022,#100d1a);
+  border:1px solid var(--border);border-radius:17px;
+}
+.stat{padding:20px}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-icon{
+  width:39px;height:39px;display:grid;place-items:center;
+  border-radius:12px;background:#8b5cf61b;font-size:19px;
+}
+.stat-number{font-size:30px;font-weight:800;margin:15px 0 5px}
+.stat-label{font-size:12px;color:var(--muted)}
+.stat-note{font-size:10px;color:var(--green)}
+.section-head{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:15px;flex-wrap:wrap;margin:27px 0 15px
+}
+.section-head h2{font-size:17px;margin:0}
+.section-head p{font-size:12px;color:var(--muted);margin:6px 0 0}
+.pill{font-size:10px;padding:6px 10px;border-radius:20px;
+background:#8b5cf61c;color:#c9b4ff}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{
+  background:var(--panel);color:var(--muted);
+  border:1px solid var(--border);border-radius:9px;padding:9px 13px;font-size:12px
+}
+.tab.active{background:#8b5cf625;color:#d7c5ff;border-color:#8b5cf666}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:13px}
+.search{flex:1;min-width:170px}
+.search input,.entry-input{
+  width:100%;background:#0b0912;border:1px solid var(--border);
+  border-radius:9px;padding:11px 12px;color:var(--text);outline:none;
+}
+input:focus,textarea:focus{border-color:var(--purple)!important}
+.list{display:grid;gap:9px}
+.item{
+  display:flex;align-items:center;gap:12px;padding:14px;
+  border:1px solid var(--border);background:#110e1c;border-radius:12px;
+}
+.item-icon{
+  width:40px;height:40px;border-radius:12px;display:grid;
+  place-items:center;background:#8b5cf61b;font-size:19px;flex-shrink:0
+}
+.item-content{flex:1;min-width:0}
+.item-title{font-size:12px;font-weight:700;margin-bottom:6px}
+.item-value{font-size:11px;color:var(--muted);overflow-wrap:anywhere;line-height:1.6}
+.item-actions{display:flex;gap:6px}
+.icon-btn{
+  border:1px solid var(--border);background:#1a1527;color:#c9b4ff;
+  border-radius:8px;width:34px;height:34px
+}
+.icon-btn.delete{color:var(--red)}
+.empty{text-align:center;padding:35px;color:var(--muted);font-size:13px}
+.card{padding:20px;margin-top:20px}
+.card h3{margin:0 0 8px;font-size:15px}
+.card p{font-size:12px;color:var(--muted);line-height:1.7}
+.url-row{display:flex;gap:8px;margin-top:13px}
+.url-row input{flex:1;min-width:0}
+.editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+textarea{
+  width:100%;min-height:245px;resize:vertical;
+  color:#d8caff;background:#0a0811;border:1px solid var(--border);
+  border-radius:11px;padding:14px;font:12px/1.7 monospace;outline:none
+}
+.footer{color:#776d8e;font-size:11px;text-align:center;margin-top:35px}
+.hidden{display:none!important}
+.notice{
+  padding:13px;border:1px solid #fbbf2430;background:#fbbf240b;
+  color:#d8c9a1;border-radius:10px;font-size:12px;line-height:1.7;margin-top:14px
+}
+@media(max-width:850px){
+  .sidebar{width:76px;padding:20px 10px}
+  .brand{justify-content:center;padding:0 0 30px}
+  .brand-text,.nav-label,.nav span:not(.ico),.connection{display:none}
+  .nav{justify-content:center;padding:13px 5px}
+  main{padding:23px 18px}
+}
+@media(max-width:560px){
+  .layout{display:block}
+  .sidebar{
+    width:100%;height:auto;position:sticky;top:0;z-index:5;
+    flex-direction:row;align-items:center;padding:9px 12px;
+    border-right:0;border-bottom:1px solid var(--border)
+  }
+  .brand{padding:0;margin-right:auto}
+  .logo{width:36px;height:36px;font-size:17px}
+  .brand-text{display:block}
+  .brand h2{font-size:13px}
+  .brand small{font-size:8px}
+  .sidebar nav{display:flex;gap:3px}
+  .nav{margin:0;padding:9px}
+  .nav span:not(.ico){display:none}
+  .sidebar-bottom{display:none}
+  main{padding:23px 14px 35px}
+  .topbar{align-items:flex-start;flex-direction:column}
+  .stats{grid-template-columns:1fr 1fr;gap:9px}
+  .stat{padding:14px}
+  .stat-number{font-size:25px}
+  .stat:last-child{grid-column:1/-1}
+  .editor-grid{grid-template-columns:1fr}
+  .item{padding:10px;gap:8px}
+  .item-icon{width:33px;height:33px}
+  .item-actions{flex-direction:column}
+  .btn{padding:10px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div class="brand-text">
+        <h2>SILA TECH</h2>
+        <small>WHATSAPP MANAGER</small>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav active" data-page="dashboard"><span class="ico">⌂</span><span>Dashboard</span></div>
+      <div class="nav" data-page="channels"><span class="ico">◉</span><span>My Channels</span></div>
+      <div class="nav" data-page="groups"><span class="ico">♧</span><span>My Groups</span></div>
+      <div class="nav" data-page="json"><span class="ico">{ }</span><span>JSON Editor</span></div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="connection">
+        <span class="dot"></span> Local workspace
+        <p>Hariri orodha zako na upakue JSON zako tayari kwa GitHub.</p>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">SILA TECH / CONTROL CENTER</div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <div class="subtitle" id="pageSubtitle">Simamia channels na WhatsApp groups zako sehemu moja.</div>
+      </div>
+      <div class="top-actions">
+        <button class="btn" onclick="resetData()">↻ Reset</button>
+        <button class="btn btn-primary" onclick="downloadBoth()">↓ Export JSON</button>
+      </div>
+    </header>
+
+    <section id="dashboardPage">
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-top"><span class="stat-label">TOTAL CHANNELS</span><span class="stat-icon">◉</span></div>
+          <div class="stat-number" id="channelCount">8</div>
+          <div class="stat-note">Newsletter JIDs</div>
+        </div>
+        <div class="stat">
+          <div class="stat-top"><span class="stat-label">TOTAL GROUPS</span><span class="stat-icon">♧</span></div>
+          <div class="stat-number" id="groupCount">2</div>
+          <div class="stat-note">Invite codes</div>
+        </div>
+        <div class="stat">
+          <div class="stat-top"><span class="stat-label">JSON FILES</span><span class="stat-icon">{ }</span></div>
+          <div class="stat-number">02</div>
+          <div class="stat-label">channel.json + groups.json</div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <div><h2>Quick Overview</h2><p>Orodha zilizopo kwenye workspace hii.</p></div>
+        <span class="pill">SILA TECH</span>
+      </div>
+
+      <div class="card">
+        <h3>◉ Channel JSON</h3>
+        <p>JIDs zako za WhatsApp Channels zinazohifadhiwa kwenye subscribedJids.</p>
+        <div class="url-row">
+          <input class="entry-input" id="channelUrl" placeholder="https://your-project.vercel.app/channel.json">
+          <button class="btn" onclick="copyUrl('channelUrl')">Copy</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>♧ Groups JSON</h3>
+        <p>Invite codes za WhatsApp Groups zinazohifadhiwa kwenye inviteCodes.</p>
+        <div class="url-row">
+          <input class="entry-input" id="groupUrl" placeholder="https://your-project.vercel.app/groups.json">
+          <button class="btn" onclick="copyUrl('groupUrl')">Copy</button>
+        </div>
+      </div>
+
+      <div class="notice">
+        <strong>Deployment:</strong> Weka mafaili ya JSON kwenye GitHub kisha deploy project kupitia Vercel. Weka URL halisi za deployment hapo juu. HTML hii haisave mabadiliko moja kwa moja kwenye GitHub.
+      </div>
+
+      <div class="section-head">
+        <div><h2>Recent Channels</h2><p>Muhtasari wa JIDs zako.</p></div>
+        <button class="btn" onclick="showPage('channels')">View all →</button>
+      </div>
+      <div class="list" id="recentChannels"></div>
+    </section>
+
+    <section id="channelsPage" class="hidden">
+      <div class="section-head">
+        <div><h2>My Channels</h2><p>Ongeza, tafuta, nakili au ondoa JIDs.</p></div>
+        <span class="pill" id="channelPill">8 CHANNELS</span>
+      </div>
+      <div class="toolbar">
+        <div class="search"><input id="channelSearch" placeholder="Tafuta channel..." oninput="renderChannels()"></div>
+        <button class="btn btn-primary" onclick="addChannel()">＋ Add Channel</button>
+        <button class="btn" onclick="downloadChannels()">↓ JSON</button>
+      </div>
+      <div class="list" id="channelList"></div>
+    </section>
+
+    <section id="groupsPage" class="hidden">
+      <div class="section-head">
+        <div><h2>My Groups</h2><p>Simamia invite codes za WhatsApp Groups.</p></div>
+        <span class="pill" id="groupPill">2 GROUPS</span>
+      </div>
+      <div class="toolbar">
+        <div class="search"><input id="groupSearch" placeholder="Tafuta group..." oninput="renderGroups()"></div>
+        <button class="btn btn-primary" onclick="addGroup()">＋ Add Group</button>
+        <button class="btn" onclick="downloadGroups()">↓ JSON</button>
+      </div>
+      <div class="list" id="groupList"></div>
+    </section>
+
+    <section id="jsonPage" class="hidden">
+      <div class="section-head">
+        <div><h2>JSON Editor</h2><p>Hariri data na uihakiki kabla ya kuipakua.</p></div>
+      </div>
+      <div class="editor-grid">
+        <div class="card">
+          <h3>◉ channel.json</h3>
+          <p>Muundo wa subscribedJids</p>
+          <textarea id="channelEditor" spellcheck="false"></textarea>
+          <button class="btn btn-primary" style="margin-top:12px" onclick="applyChannelJSON()">Apply Channels</button>
+          <button class="btn" style="margin-top:12px" onclick="downloadChannels()">Download</button>
+        </div>
+        <div class="card">
+          <h3>♧ groups.json</h3>
+          <p>Muundo wa inviteCodes</p>
+          <textarea id="groupEditor" spellcheck="false"></textarea>
+          <button class="btn btn-primary" style="margin-top:12px" onclick="applyGroupJSON()">Apply Groups</button>
+          <button class="btn" style="margin-top:12px" onclick="downloadGroups()">Download</button>
+        </div>
+      </div>
+      <div class="notice">Tumia Apply baada ya kuhariri JSON. Ukipata kosa la muundo, data ya sasa haitabadilishwa.</div>
+    </section>
+
+    <footer class="footer">SILA TECH © 2026 · WHATSAPP CONTROL CENTER</footer>
+  </main>
+</div>
+
+<script>
+const initialChannels = [
+  "120363402325089913@newsletter",
+  "120363421404091643@newsletter",
+  "120363426725658598@newsletter",
+  "120363405179648781@newsletter",
+  "120363423228014640@newsletter",
+  "120363407628683238@newsletter",
+  "120363408262016479@newsletter",
+  "120363425017831429@newsletter"
+];
+
+const initialGroups = [
+  "LexNEPHRmU96sOmZCIOK8G",
+  "LNue84oOLtnEwuXKuH7N5y"
+];
+
+let channels = [...initialChannels];
+let groups = [...initialGroups];
+
+const titles = {
+  dashboard: ["Dashboard", "Simamia channels na WhatsApp groups zako sehemu moja."],
+  channels: ["My Channels", "Orodha yako ya WhatsApp Channels."],
+  groups: ["My Groups", "Orodha yako ya WhatsApp Groups."],
+  json: ["JSON Editor", "Hariri na export mafaili yako ya JSON."]
+};
+
+function showPage(page) {
+  document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+  document.getElementById(page + "Page").classList.remove("hidden");
+  document.querySelectorAll(".nav").forEach(n => n.classList.toggle("active", n.dataset.page === page));
+  document.getElementById("pageTitle").textContent = titles[page][0];
+  document.getElementById("pageSubtitle").textContent = titles[page][1];
+  if (page === "json") syncEditors();
+}
+
+document.querySelectorAll(".nav").forEach(n => {
+  n.addEventListener("click", () => showPage(n.dataset.page));
+});
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[c]);
+}
+
+function updateStats() {
+  document.getElementById("channelCount").textContent = channels.length;
+  document.getElementById("groupCount").textContent = groups.length;
+  document.getElementById("channelPill").textContent = channels.length + " CHANNELS";
+  document.getElementById("groupPill").textContent = groups.length + " GROUPS";
+  syncEditors();
+}
+
+function channelItem(jid, index) {
+  return `<div class="item">
+    <div class="item-icon">◉</div>
+    <div class="item-content">
+      <div class="item-title">WhatsApp Channel ${index + 1}</div>
+      <div class="item-value">${escapeHTML(jid)}</div>
+    </div>
+    <div class="item-actions">
+      <button class="icon-btn" title="Copy JID" onclick="copyText(channels[${index}])">⧉</button>
+      <button class="icon-btn delete" title="Remove" onclick="removeChannel(${index})">×</button>
+    </div>
+  </div>`;
+}
+
+function groupItem(code, index) {
+  return `<div class="item">
+    <div class="item-icon">♧</div>
+    <div class="item-content">
+      <div class="item-title">WhatsApp Group ${index + 1}</div>
+      <div class="item-value">${escapeHTML(code)}</div>
+      <div class="item-value">https://chat.whatsapp.com/${escapeHTML(code)}</div>
+    </div>
+    <div class="item-actions">
+      <button class="icon-btn" title="Copy code" onclick="copyText(groups[${index}])">⧉</button>
+      <button class="icon-btn delete" title="Remove" onclick="removeGroup(${index})">×</button>
+    </div>
+  </div>`;
+}
+
+function renderChannels() {
+  const q = document.getElementById("channelSearch").value.toLowerCase();
+  const results = channels.map((v,i)=>({v,i})).filter(x=>x.v.toLowerCase().includes(q));
+  document.getElementById("channelList").innerHTML = results.map(x=>channelItem(x.v,x.i)).join("") || '<div class="empty">Hakuna channels zilizopatikana.</div>';
+}
+
+function renderGroups() {
+  const q = document.getElementById("groupSearch").value.toLowerCase();
+  const results = groups.map((v,i)=>({v,i})).filter(x=>x.v.toLowerCase().includes(q));
+  document.getElementById("groupList").innerHTML = results.map(x=>groupItem(x.v,x.i)).join("") || '<div class="empty">Hakuna groups zilizopatikana.</div>';
+}
+
+function renderRecent() {
+  document.getElementById("recentChannels").innerHTML = channels.slice(0,3).map((v,i)=>channelItem(v,i)).join("");
+}
+
+function addChannel() {
+  const value = prompt("Weka Channel JID (mfano: 120363...@newsletter):");
+  if (value === null) return;
+  const jid = value.trim();
+  if (!/^\d+@newsletter$/.test(jid)) return alert("JID si sahihi. Inapaswa kuishia na @newsletter na kuanza na namba.");
+  if (channels.includes(jid)) return alert("JID hii tayari ipo.");
+  channels.push(jid);
+  refresh();
+}
+
+function addGroup() {
+  const value = prompt("Weka WhatsApp group invite link au invite code:");
+  if (value === null) return;
+  const code = value.trim().replace(/\/+$/, "").split("/").pop().split("?")[0];
+  if (!/^[A-Za-z0-9_-]{10,}$/.test(code)) return alert("Invite code haionekani kuwa sahihi.");
+  if (groups.includes(code)) return alert("Invite code hii tayari ipo.");
+  groups.push(code);
+  refresh();
+}
+
+function removeChannel(index) {
+  if (!confirm("Uondoe Channel JID hii kwenye orodha?")) return;
+  channels.splice(index,1);
+  refresh();
+}
+
+function removeGroup(index) {
+  if (!confirm("Uondoe group hii kwenye orodha?")) return;
+  groups.splice(index,1);
+  refresh();
+}
+
+function refresh() {
+  updateStats();
+  renderChannels();
+  renderGroups();
+  renderRecent();
+}
+
+function channelJSON() {
+  return JSON.stringify({subscribedJids:channels},null,2);
+}
+
+function groupJSON() {
+  return JSON.stringify({inviteCodes:groups},null,2);
+}
+
+function syncEditors() {
+  document.getElementById("channelEditor").value = channelJSON();
+  document.getElementById("groupEditor").value = groupJSON();
+}
+
+function applyChannelJSON() {
+  try {
+    const data = JSON.parse(document.getElementById("channelEditor").value);
+    if (!data || !Array.isArray(data.subscribedJids) ||
+        !data.subscribedJids.every(v=>typeof v==="string" && /^\d+@newsletter$/.test(v))) {
+      throw new Error("Tumia subscribedJids yenye JIDs halali zinazoishia na @newsletter.");
+    }
+    channels = [...new Set(data.subscribedJids)];
+    refresh();
+    alert("Channels zimehakikiwa na kusasishwa kwenye dashboard.");
+  } catch(e) { alert("JSON error: " + e.message); }
+}
+
+function applyGroupJSON() {
+  try {
+    const data = JSON.parse(document.getElementById("groupEditor").value);
+    if (!data || !Array.isArray(data.inviteCodes) ||
+        !data.inviteCodes.every(v=>typeof v==="string" && /^[A-Za-z0-9_-]{10,}$/.test(v))) {
+      throw new Error("Tumia inviteCodes yenye group invite codes halali.");
+    }
+    groups = [...new Set(data.inviteCodes)];
+    refresh();
+    alert("Groups zimehakikiwa na kusasishwa kwenye dashboard.");
+  } catch(e) { alert("JSON error: " + e.message); }
+}
+
+function downloadFile(name, content) {
+  const blob = new Blob([content],{type:"application/json;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+function downloadChannels() { downloadFile("channel.json",channelJSON()); }
+function downloadGroups() { downloadFile("groups.json",groupJSON()); }
+
+function downloadBoth() {
+  downloadChannels();
+  setTimeout(downloadGroups,300);
+}
+
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Imenakiliwa!");
+  } catch {
+    prompt("Copy maandishi haya:",text);
+  }
+}
+
+function copyUrl(id) {
+  const value = document.getElementById(id).value.trim();
+  if (!value) return alert("Weka kwanza URL yako ya Vercel.");
+  copyText(value);
+}
+
+function resetData() {
+  if (!confirm("Unataka kurudisha orodha ya awali? Mabadiliko yako ya sasa yatapotea.")) return;
+  channels = [...initialChannels];
+  groups = [...initialGroups];
+  refresh();
+}
+
+refresh();
+</script>
+</body>
+</html>
